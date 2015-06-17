@@ -11,6 +11,9 @@ x.xx.x Release notes (yyyy-MM-dd)
 * Avoid evaluating results eagerly when filtering and sorting.
 * Add nullability annotations to the Objective-C API to provide enhanced compiler
   warnings and bridging to Swift.
+* Entire standalone object graph copies can now be made with
+  `-[RLMObject initWithValue:]` and `Object(value:)` when the value is of the
+  same object type.
 
 ### Bugfixes
 
@@ -125,7 +128,7 @@ x.xx.x Release notes (yyyy-MM-dd)
 ### Enhancements
 
 * Exceptions raised when incorrect object types are used with predicates now contain more detailed information.
-* Added `-[RLMMigration deleteDataForClassName:]` and `Migration.deleteData(_:)` 
+* Added `-[RLMMigration deleteDataForClassName:]` and `Migration.deleteData(_:)`
   to enable cleaning up after removing object subclasses
 
 ### Bugfixes
