@@ -68,6 +68,83 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		3FFFCBE51B3DF9A00040DFBD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3FFFCBDE1B3DF99F0040DFBD /* ReactKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1FED88F819C1EB120065658B;
+			remoteInfo = "ReactKit-OSX";
+		};
+		3FFFCBE71B3DF9A00040DFBD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3FFFCBDE1B3DF99F0040DFBD /* ReactKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1FED890319C1EB120065658B;
+			remoteInfo = "ReactKit-OSXTests";
+		};
+		3FFFCBE91B3DF9A00040DFBD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3FFFCBDE1B3DF99F0040DFBD /* ReactKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1FED894119C1EB7D0065658B;
+			remoteInfo = "ReactKit-iOS";
+		};
+		3FFFCBEB1B3DF9A00040DFBD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3FFFCBDE1B3DF99F0040DFBD /* ReactKit.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1FED894B19C1EB7D0065658B;
+			remoteInfo = "ReactKit-iOSTests";
+		};
+		3FFFCBED1B3DF9AD0040DFBD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3FFFCBDE1B3DF99F0040DFBD /* ReactKit.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 1FED894019C1EB7D0065658B;
+			remoteInfo = "ReactKit-iOS";
+		};
+		3FFFCBFD1B3DF9DB0040DFBD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3FFFCBF81B3DF9DB0040DFBD /* Async.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BF70E4E91ABF124A00B4FDD4;
+			remoteInfo = "Async iOS";
+		};
+		3FFFCBFF1B3DF9DB0040DFBD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3FFFCBF81B3DF9DB0040DFBD /* Async.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BF41E41E1AC5FB2400A1DDB2;
+			remoteInfo = "Async OSX";
+		};
+		3FFFCC081B3DF9E40040DFBD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3FFFCC011B3DF9E40040DFBD /* SwiftTask.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1F46DED4199EDF1000F97868;
+			remoteInfo = "SwiftTask-OSX";
+		};
+		3FFFCC0A1B3DF9E40040DFBD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3FFFCC011B3DF9E40040DFBD /* SwiftTask.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1F46DEDF199EDF1000F97868;
+			remoteInfo = "SwiftTask-OSXTests";
+		};
+		3FFFCC0C1B3DF9E40040DFBD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3FFFCC011B3DF9E40040DFBD /* SwiftTask.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 48CD5A0C19AEE3570042B9F1;
+			remoteInfo = "SwiftTask-iOS";
+		};
+		3FFFCC0E1B3DF9E40040DFBD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3FFFCC011B3DF9E40040DFBD /* SwiftTask.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4822F0D019D00ABF00F5F572;
+			remoteInfo = "SwiftTask-iOSTests";
+		};
 		E8D212FD1AF6AAA000DAB243 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E805758D19BA55E600376620 /* Project object */;
@@ -185,6 +262,9 @@
 		0295B91519D103A70036D6C3 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
 		0A73D4411B1443A700E1E8EE /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../../README.md; sourceTree = SOURCE_ROOT; };
 		3FC898FE1A1414110067CBEC /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		3FFFCBDE1B3DF99F0040DFBD /* ReactKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactKit.xcodeproj; path = ../../../../../ReactKit/ReactKit.xcodeproj; sourceTree = "<group>"; };
+		3FFFCBF81B3DF9DB0040DFBD /* Async.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Async.xcodeproj; path = ../../../../../ReactKit/Carthage/Checkouts/Async/Async.xcodeproj; sourceTree = "<group>"; };
+		3FFFCC011B3DF9E40040DFBD /* SwiftTask.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SwiftTask.xcodeproj; path = ../../../../../ReactKit/Carthage/Checkouts/SwiftTask/SwiftTask.xcodeproj; sourceTree = "<group>"; };
 		C07E5D791B15001500ED625C /* Realm.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Realm.framework; path = ../../../build/ios/swift/Realm.framework; sourceTree = SOURCE_ROOT; };
 		C09C490F1A605A4800638C9F /* RealmSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RealmSwift.framework; path = ../../../build/ios/swift/RealmSwift.framework; sourceTree = SOURCE_ROOT; };
 		E886FB601A12A6FC00CB2D0B /* GroupedTableView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GroupedTableView.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -288,6 +368,37 @@
 			name = RealmSwift;
 			sourceTree = "<group>";
 		};
+		3FFFCBDF1B3DF99F0040DFBD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3FFFCBE61B3DF9A00040DFBD /* ReactKit.framework */,
+				3FFFCBE81B3DF9A00040DFBD /* ReactKit-OSXTests.xctest */,
+				3FFFCBEA1B3DF9A00040DFBD /* ReactKit.framework */,
+				3FFFCBEC1B3DF9A00040DFBD /* ReactKit-iOSTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3FFFCBF91B3DF9DB0040DFBD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3FFFCBFE1B3DF9DB0040DFBD /* Async.framework */,
+				3FFFCC001B3DF9DB0040DFBD /* Async.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3FFFCC021B3DF9E40040DFBD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3FFFCC091B3DF9E40040DFBD /* SwiftTask.framework */,
+				3FFFCC0B1B3DF9E40040DFBD /* SwiftTask-OSXTests.xctest */,
+				3FFFCC0D1B3DF9E40040DFBD /* SwiftTask.framework */,
+				3FFFCC0F1B3DF9E40040DFBD /* SwiftTask-iOSTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		E805758C19BA55E600376620 = {
 			isa = PBXGroup;
 			children = (
@@ -319,6 +430,9 @@
 		E886FB621A12A73E00CB2D0B /* GroupedTableView */ = {
 			isa = PBXGroup;
 			children = (
+				3FFFCC011B3DF9E40040DFBD /* SwiftTask.xcodeproj */,
+				3FFFCBF81B3DF9DB0040DFBD /* Async.xcodeproj */,
+				3FFFCBDE1B3DF99F0040DFBD /* ReactKit.xcodeproj */,
 				E886FB631A12A73E00CB2D0B /* AppDelegate.swift */,
 				E886FB641A12A73E00CB2D0B /* Images.xcassets */,
 				E886FB651A12A73E00CB2D0B /* Info.plist */,
@@ -394,6 +508,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				3FFFCBEE1B3DF9AD0040DFBD /* PBXTargetDependency */,
 				E8D213021AF6AAA900DAB243 /* PBXTargetDependency */,
 			);
 			name = GroupedTableView;
@@ -538,6 +653,20 @@
 			mainGroup = E805758C19BA55E600376620;
 			productRefGroup = E805759619BA55E600376620 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 3FFFCBF91B3DF9DB0040DFBD /* Products */;
+					ProjectRef = 3FFFCBF81B3DF9DB0040DFBD /* Async.xcodeproj */;
+				},
+				{
+					ProductGroup = 3FFFCBDF1B3DF99F0040DFBD /* Products */;
+					ProjectRef = 3FFFCBDE1B3DF99F0040DFBD /* ReactKit.xcodeproj */;
+				},
+				{
+					ProductGroup = 3FFFCC021B3DF9E40040DFBD /* Products */;
+					ProjectRef = 3FFFCC011B3DF9E40040DFBD /* SwiftTask.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				E8D3F2521A11765200620884 /* Backlink */,
@@ -550,6 +679,79 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		3FFFCBE61B3DF9A00040DFBD /* ReactKit.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ReactKit.framework;
+			remoteRef = 3FFFCBE51B3DF9A00040DFBD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3FFFCBE81B3DF9A00040DFBD /* ReactKit-OSXTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "ReactKit-OSXTests.xctest";
+			remoteRef = 3FFFCBE71B3DF9A00040DFBD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3FFFCBEA1B3DF9A00040DFBD /* ReactKit.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ReactKit.framework;
+			remoteRef = 3FFFCBE91B3DF9A00040DFBD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3FFFCBEC1B3DF9A00040DFBD /* ReactKit-iOSTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "ReactKit-iOSTests.xctest";
+			remoteRef = 3FFFCBEB1B3DF9A00040DFBD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3FFFCBFE1B3DF9DB0040DFBD /* Async.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Async.framework;
+			remoteRef = 3FFFCBFD1B3DF9DB0040DFBD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3FFFCC001B3DF9DB0040DFBD /* Async.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Async.framework;
+			remoteRef = 3FFFCBFF1B3DF9DB0040DFBD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3FFFCC091B3DF9E40040DFBD /* SwiftTask.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = SwiftTask.framework;
+			remoteRef = 3FFFCC081B3DF9E40040DFBD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3FFFCC0B1B3DF9E40040DFBD /* SwiftTask-OSXTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "SwiftTask-OSXTests.xctest";
+			remoteRef = 3FFFCC0A1B3DF9E40040DFBD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3FFFCC0D1B3DF9E40040DFBD /* SwiftTask.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = SwiftTask.framework;
+			remoteRef = 3FFFCC0C1B3DF9E40040DFBD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3FFFCC0F1B3DF9E40040DFBD /* SwiftTask-iOSTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "SwiftTask-iOSTests.xctest";
+			remoteRef = 3FFFCC0E1B3DF9E40040DFBD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		E886FB5B1A12A6FC00CB2D0B /* Resources */ = {
@@ -666,6 +868,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		3FFFCBEE1B3DF9AD0040DFBD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "ReactKit-iOS";
+			targetProxy = 3FFFCBED1B3DF9AD0040DFBD /* PBXContainerItemProxy */;
+		};
 		E8D212FE1AF6AAA000DAB243 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = E8D212EC1AF6A96500DAB243 /* RealmSwift */;

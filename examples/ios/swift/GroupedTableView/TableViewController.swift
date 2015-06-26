@@ -18,11 +18,20 @@
 
 import UIKit
 import RealmSwift
+import ReactKit
 
-class DemoObject: Object {
+class Entry: Object {
     dynamic var title = ""
     dynamic var date = NSDate()
-    dynamic var sectionTitle = ""
+}
+
+class Group: Object {
+    dynamic var name = ""
+    let entries = List<Entry>()
+}
+
+class GroupParent: Object {
+    let groups = List<Group>()
 }
 
 class Cell: UITableViewCell {
@@ -33,29 +42,34 @@ class Cell: UITableViewCell {
     required init(coder: NSCoder) {
         fatalError("NSCoding not supported")
     }
+
+    dynamic var entry: Entry?
+    func attach(object: Entry) {
+        if entry == nil {
+            (self.textLabel!, "text") <~ KVO.stream(self, "entry.title").ownedBy(self)
+            (self.detailTextLabel!, "text") <~ (KVO.stream(self, "entry.date") |> map { $0!.description }).ownedBy(self)
+        }
+        entry = object
+    }
 }
 
-var sectionTitles = ["A", "B", "C"]
-var objectsBySection = [Results<DemoObject>]()
-
 class TableViewController: UITableViewController {
+    let parent: GroupParent = {
+        let realm = Realm()
+        let obj = realm.objects(GroupParent).first
+        if obj != nil {
+            return obj!
+        }
 
-    var notificationToken: NotificationToken?
+        let newObj = GroupParent()
+        realm.write { realm.add(newObj) }
+        return newObj
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         setupUI()
-
-        // Set realm notification block
-        notificationToken = Realm().addNotificationBlock { [unowned self] note, realm in
-            self.tableView.reloadData()
-        }
-        for section in sectionTitles {
-            let unsortedObjects = Realm().objects(DemoObject).filter("sectionTitle == '\(section)'")
-            let sortedObjects = unsortedObjects.sorted("date", ascending: true)
-            objectsBySection.append(sortedObjects)
-        }
         tableView.reloadData()
     }
 
@@ -65,31 +79,41 @@ class TableViewController: UITableViewController {
         tableView.registerClass(Cell.self, forCellReuseIdentifier: "cell")
 
         self.title = "GroupedTableView"
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "BG Add", style: .Plain, target: self, action: "backgroundAdd")
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "add")
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Add Group", style: .Plain, target: self, action: "addGroup")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .Add, target: self, action: "addEntry")
+
+        KVO.detailedStream(parent, "groups").ownedBy(self) ~> { [unowned self] _, kind, indexes in
+            if let indexes = indexes where kind == .Insertion {
+                self.tableView.insertSections(indexes, withRowAnimation: .Automatic)
+                self.bindGroup(self.parent.groups.last!)
+            }
+            else {
+                self.tableView.reloadData()
+            }
+        }
+
+        for group in parent.groups {
+            bindGroup(group)
+        }
     }
 
     // Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return sectionTitles.count
+        return parent.groups.count
     }
 
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return sectionTitles[section]
+        return parent.groups[section].name
     }
 
     override func tableView(tableView: UITableView?, numberOfRowsInSection section: Int) -> Int {
-        return Int(objectsBySection[section].count)
+        return parent.groups[section].entries.count
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! Cell
-
-        let object = objectForIndexPath(indexPath)
-        cell.textLabel?.text = object?.title
-        cell.detailTextLabel?.text = object?.date.description
-
+        cell.attach(objectForIndexPath(indexPath))
         return cell
     }
 
@@ -97,46 +121,77 @@ class TableViewController: UITableViewController {
         if editingStyle == .Delete {
             let realm = Realm()
             realm.write {
-                realm.delete(objectForIndexPath(indexPath)!)
+                realm.delete(self.objectForIndexPath(indexPath))
             }
+        }
+    }
+
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let realm = Realm()
+        realm.write {
+            self.parent.groups[indexPath.section].entries[indexPath.row].date = NSDate()
         }
     }
 
     // Actions
 
-    func backgroundAdd() {
-        let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
-        // Import many items in a background thread
-        dispatch_async(queue) {
-            // Get new realm and table since we are in a new thread
-            let realm = Realm()
-            realm.beginWrite()
-            for index in 0..<5 {
-                // Add row via dictionary. Order is ignored.
-                realm.create(DemoObject.self, value: ["title": randomTitle(), "date": NSDate(), "sectionTitle": randomSectionTitle()])
+    func addGroup() {
+        modifyInBackground { groups in
+            let group = groups.realm!.create(Group.self, value: ["name": "Group \(arc4random())", "entries": []])
+            groups.append(group)
+        }
+    }
+
+    func addEntry() {
+        modifyInBackground { groups in
+            let group = groups[Int(arc4random_uniform(UInt32(groups.count)))]
+            let entry = groups.realm!.create(Entry.self, value: ["Entry \(arc4random())", NSDate()])
+            group.entries.append(entry)
+        }
+    }
+
+    // Helpers
+
+    func objectForIndexPath(indexPath: NSIndexPath) -> Entry {
+        return parent.groups[indexPath.section].entries[indexPath.row]
+    }
+
+    func indexSetToIndexPathArray(indexes: NSIndexSet, section: Int) -> [AnyObject] {
+        var paths = [AnyObject]()
+        var index = indexes.firstIndex
+        while index != NSNotFound {
+            paths += [NSIndexPath(forRow: index, inSection: section)]
+            index = indexes.indexGreaterThanIndex(index)
+        }
+        return paths
+    }
+
+    func bindGroup(group: Group) {
+        KVO.detailedStream(group, "entries").ownedBy(self) ~> { [unowned self] _, kind, indexes in
+            if let indexes = indexes {
+                let section = self.parent.groups.indexOf(group)!
+                let paths = self.indexSetToIndexPathArray(indexes, section: section)
+                if kind == .Insertion {
+                    self.tableView.insertRowsAtIndexPaths(paths, withRowAnimation: .Automatic)
+                } else if kind == .Removal {
+                    self.tableView.deleteRowsAtIndexPaths(paths, withRowAnimation: .Automatic)
+                } else {
+                    self.tableView.reloadData()
+                }
             }
-            realm.commitWrite()
+            else {
+                self.tableView.reloadData()
+            }
         }
     }
 
-    func add() {
-        Realm().write {
-            let object = [randomTitle(), NSDate(), randomSectionTitle()]
-            Realm().create(DemoObject.self, value: object)
+    func modifyInBackground(block: (List<Group>) -> Void) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            let realm = Realm()
+            let parent = realm.objects(GroupParent).first!
+            realm.write {
+                block(parent.groups)
+            }
         }
     }
-}
-
-// Helpers
-
-func objectForIndexPath(indexPath: NSIndexPath) -> DemoObject? {
-    return objectsBySection[indexPath.section][indexPath.row]
-}
-
-func randomTitle() -> String {
-    return "Title \(arc4random())"
-}
-
-func randomSectionTitle() -> String {
-    return sectionTitles[Int(arc4random()) % sectionTitles.count]
 }
