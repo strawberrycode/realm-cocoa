@@ -27,6 +27,7 @@
 #import "RLMSchema_Private.h"
 #import "RLMUtil.hpp"
 
+#import <objc/message.h>
 #import <objc/runtime.h>
 
 typedef NS_ENUM(char, RLMAccessorCode) {
@@ -44,6 +45,11 @@ typedef NS_ENUM(char, RLMAccessorCode) {
     RLMAccessorCodeLink,
     RLMAccessorCodeArray,
     RLMAccessorCodeAny,
+
+    RLMAccessorCodeIntObject,
+    RLMAccessorCodeFloatObject,
+    RLMAccessorCodeDoubleObject,
+    RLMAccessorCodeBoolObject,
 };
 
 // long getter/setter
@@ -260,6 +266,115 @@ static inline void RLMSetValue(__unsafe_unretained RLMObjectBase *const obj, NSU
     }
 }
 
+static inline NSNumber<RLMInt> *RLMGetIntObject(__unsafe_unretained RLMObjectBase *const obj, NSUInteger colIndex) {
+    RLMVerifyAttached(obj);
+
+    if (obj->_row.is_null(colIndex)) {
+        return nil;
+    }
+    return @(obj->_row.get_int(colIndex));
+}
+static inline void RLMSetValue(__unsafe_unretained RLMObjectBase *const obj, NSUInteger colIndex,
+                               __unsafe_unretained NSNumber<RLMInt> *const intObject) {
+    RLMVerifyInWriteTransaction(obj);
+
+    if (intObject) {
+        obj->_row.set_int(colIndex, intObject.longLongValue);
+    }
+    else {
+        obj->_row.set_null(colIndex);
+    }
+}
+static inline void RLMSetValueUnique(__unsafe_unretained RLMObjectBase *const obj, NSUInteger colIndex, NSString *propName,
+                                     __unsafe_unretained NSNumber<RLMInt> *const intObject) {
+    RLMVerifyInWriteTransaction(obj);
+
+    long long longLongValue = 0;
+    size_t row;
+    if (intObject) {
+        longLongValue = intObject.longLongValue;
+        row = obj->_row.get_table()->find_first_int(colIndex, longLongValue);
+    }
+    else {
+        row = obj->_row.get_table()->find_first_null(colIndex);
+    }
+
+    if (row == obj->_row.get_index()) {
+        return;
+    }
+    if (row != realm::not_found) {
+        NSString *reason = [NSString stringWithFormat:@"Can't set primary key property '%@' to existing value '%@'.", propName, intObject];
+        @throw RLMException(reason);
+    }
+
+    if (intObject) {
+        obj->_row.set_int(colIndex, longLongValue);
+    }
+    else {
+        obj->_row.set_null(colIndex);
+    }
+}
+
+static inline NSNumber<RLMFloat> *RLMGetFloatObject(__unsafe_unretained RLMObjectBase *const obj, NSUInteger colIndex) {
+    RLMVerifyAttached(obj);
+
+    if (obj->_row.is_null(colIndex)) {
+        return nil;
+    }
+    return @(obj->_row.get_float(colIndex));
+}
+static inline void RLMSetValue(__unsafe_unretained RLMObjectBase *const obj, NSUInteger colIndex,
+                               __unsafe_unretained NSNumber<RLMFloat> *const floatObject) {
+    RLMVerifyInWriteTransaction(obj);
+
+    if (floatObject) {
+        obj->_row.set_float(colIndex, floatObject.floatValue);
+    }
+    else {
+        obj->_row.set_null(colIndex);
+    }
+}
+
+static inline NSNumber<RLMDouble> *RLMGetDoubleObject(__unsafe_unretained RLMObjectBase *const obj, NSUInteger colIndex) {
+    RLMVerifyAttached(obj);
+
+    if (obj->_row.is_null(colIndex)) {
+        return nil;
+    }
+    return @(obj->_row.get_double(colIndex));
+}
+static inline void RLMSetValue(__unsafe_unretained RLMObjectBase *const obj, NSUInteger colIndex,
+                               __unsafe_unretained NSNumber<RLMDouble> *const doubleObject) {
+    RLMVerifyInWriteTransaction(obj);
+
+    if (doubleObject) {
+        obj->_row.set_double(colIndex, doubleObject.doubleValue);
+    }
+    else {
+        obj->_row.set_null(colIndex);
+    }
+}
+
+static inline NSNumber<RLMBool> *RLMGetBoolObject(__unsafe_unretained RLMObjectBase *const obj, NSUInteger colIndex) {
+    RLMVerifyAttached(obj);
+
+    if (obj->_row.is_null(colIndex)) {
+        return nil;
+    }
+    return @(obj->_row.get_bool(colIndex));
+}
+static inline void RLMSetValue(__unsafe_unretained RLMObjectBase *const obj, NSUInteger colIndex,
+                               __unsafe_unretained NSNumber<RLMBool> *const boolObject) {
+    RLMVerifyInWriteTransaction(obj);
+
+    if (boolObject) {
+        obj->_row.set_bool(colIndex, boolObject.boolValue);
+    }
+    else {
+        obj->_row.set_null(colIndex);
+    }
+}
+
 // any getter/setter
 static inline id RLMGetAnyProperty(__unsafe_unretained RLMObjectBase *const obj, NSUInteger col_ndx) {
     RLMVerifyAttached(obj);
@@ -396,6 +511,23 @@ static IMP RLMAccessorGetter(RLMProperty *prop, RLMAccessorCode accessorCode, NS
             return imp_implementationWithBlock(^(__unsafe_unretained RLMObjectBase *const obj) {
                 return RLMGetAnyProperty(obj, colIndex);
             });
+
+        case RLMAccessorCodeIntObject:
+            return imp_implementationWithBlock(^(__unsafe_unretained RLMObjectBase *const obj) {
+                return RLMGetIntObject(obj, colIndex);
+            });
+        case RLMAccessorCodeFloatObject:
+            return imp_implementationWithBlock(^(__unsafe_unretained RLMObjectBase *const obj) {
+                return RLMGetFloatObject(obj, colIndex);
+            });
+        case RLMAccessorCodeDoubleObject:
+            return imp_implementationWithBlock(^(__unsafe_unretained RLMObjectBase *const obj) {
+                return RLMGetDoubleObject(obj, colIndex);
+            });
+        case RLMAccessorCodeBoolObject:
+            return imp_implementationWithBlock(^(__unsafe_unretained RLMObjectBase *const obj) {
+                return RLMGetBoolObject(obj, colIndex);
+            });
     }
 }
 
@@ -410,6 +542,52 @@ static IMP RLMMakeSetter(NSUInteger colIndex, bool isPrimary) {
         RLMSetValue(obj, colIndex, static_cast<StorageType>(val));
     });
 }
+
+//template<typename StorageType>
+//static IMP RLMMakeSetter(NSUInteger colIndex, bool isPrimary, SEL selector) {
+//    if (isPrimary) {
+//        return imp_implementationWithBlock(^(__unused RLMObjectBase *obj, __unused NSNumber *val) {
+//            @throw RLMException(@"Primary key can't be changed after an object is inserted.");
+//        });
+//    }
+//    auto msgSend = (StorageType (*)(id, SEL))objc_msgSend;
+//    return imp_implementationWithBlock(^(__unsafe_unretained RLMObjectBase *const obj, NSNumber *val) {
+//        StorageType primitiveValue = msgSend(val, selector);
+//        RLMSetValue(obj, colIndex, static_cast<StorageType>(primitiveValue));
+//    });
+//}
+//
+//#if defined(__i386__)
+//
+//template<float>
+//static IMP RLMMakeSetter(NSUInteger colIndex, bool isPrimary, SEL selector) {
+//    if (isPrimary) {
+//        return imp_implementationWithBlock(^(__unused RLMObjectBase *obj, __unused NSNumber *val) {
+//            @throw RLMException(@"Primary key can't be changed after an object is inserted.");
+//        });
+//    }
+//    auto msgSend = (StorageType (*)(id, SEL))objc_msgSend_fpret();
+//    return imp_implementationWithBlock(^(__unsafe_unretained RLMObjectBase *const obj, NSNumber *val) {
+//        StorageType primitiveValue = msgSend(val, selector);
+//        RLMSetValue(obj, colIndex, static_cast<StorageType>(primitiveValue));
+//    });
+//}
+//
+//template<double>
+//static IMP RLMMakeSetter(NSUInteger colIndex, bool isPrimary, SEL selector) {
+//    if (isPrimary) {
+//        return imp_implementationWithBlock(^(__unused RLMObjectBase *obj, __unused NSNumber *val) {
+//            @throw RLMException(@"Primary key can't be changed after an object is inserted.");
+//        });
+//    }
+//    auto msgSend = (StorageType (*)(id, SEL))objc_msgSend_fpret();
+//    return imp_implementationWithBlock(^(__unsafe_unretained RLMObjectBase *const obj, NSNumber *val) {
+//        StorageType primitiveValue = msgSend(val, selector);
+//        RLMSetValue(obj, colIndex, static_cast<StorageType>(primitiveValue));
+//    });
+//}
+//
+//#endif // defined(__i386__)
 
 // dynamic setter with column closure
 static IMP RLMAccessorSetter(RLMProperty *prop, RLMAccessorCode accessorCode) {
@@ -429,6 +607,10 @@ static IMP RLMAccessorSetter(RLMProperty *prop, RLMAccessorCode accessorCode) {
         case RLMAccessorCodeLink: return RLMMakeSetter<RLMObjectBase *>(colIndex, prop.isPrimary);
         case RLMAccessorCodeArray: return RLMMakeSetter<RLMArray *>(colIndex, prop.isPrimary);
         case RLMAccessorCodeAny: return RLMMakeSetter<id>(colIndex, prop.isPrimary);
+        case RLMAccessorCodeIntObject: return RLMMakeSetter<NSNumber<RLMInt> *>(colIndex, prop.isPrimary);
+        case RLMAccessorCodeFloatObject: return RLMMakeSetter<NSNumber<RLMFloat> *>(colIndex, prop.isPrimary);
+        case RLMAccessorCodeDoubleObject: return RLMMakeSetter<NSNumber<RLMDouble> *>(colIndex, prop.isPrimary);
+        case RLMAccessorCodeBoolObject: return RLMMakeSetter<NSNumber<RLMBool> *>(colIndex, prop.isPrimary);
     }
 }
 
@@ -533,13 +715,10 @@ static RLMAccessorCode accessorCodeForType(char objcTypeCode, RLMPropertyType rl
                 case RLMPropertyTypeDate: return RLMAccessorCodeDate;
                 case RLMPropertyTypeData: return RLMAccessorCodeData;
                 case RLMPropertyTypeAny: return RLMAccessorCodeAny;
-                    
-                // throw for all primitive types
-                case RLMPropertyTypeBool:
-                case RLMPropertyTypeDouble:
-                case RLMPropertyTypeFloat:
-                case RLMPropertyTypeInt:
-                    break;
+                case RLMPropertyTypeInt: return RLMAccessorCodeIntObject;
+                case RLMPropertyTypeBool: return RLMAccessorCodeBoolObject;
+                case RLMPropertyTypeDouble: return RLMAccessorCodeDoubleObject;
+                case RLMPropertyTypeFloat: return RLMAccessorCodeFloatObject;
             }
         case 'c':
             switch (rlmType) {
@@ -660,6 +839,23 @@ void RLMDynamicSet(__unsafe_unretained RLMObjectBase *const obj, __unsafe_unreta
                 RLMSetValue(obj, col, [val longLongValue]);
             }
             break;
+        case RLMAccessorCodeIntObject:
+            if (prop.isPrimary) {
+                RLMSetValueUnique(obj, col, prop.name, (NSNumber<RLMInt> *)val);
+            }
+            else {
+                RLMSetValue(obj, col, (NSNumber<RLMInt> *)val);
+            }
+            break;
+        case RLMAccessorCodeFloatObject:
+            RLMSetValue(obj, col, (NSNumber<RLMFloat> *)val);
+            break;
+        case RLMAccessorCodeDoubleObject:
+            RLMSetValue(obj, col, (NSNumber<RLMDouble> *)val);
+            break;
+        case RLMAccessorCodeBoolObject:
+            RLMSetValue(obj, col, (NSNumber<RLMBool> *)val);
+            break;
         case RLMAccessorCodeFloat:
             RLMSetValue(obj, col, [val floatValue]);
             break;
@@ -734,5 +930,10 @@ id RLMDynamicGet(__unsafe_unretained RLMObjectBase *obj, __unsafe_unretained NSS
         case RLMAccessorCodeLink: return RLMGetLink(obj, col, prop.objectClassName);
         case RLMAccessorCodeArray: return RLMGetArray(obj, col, prop.objectClassName);
         case RLMAccessorCodeAny: return RLMGetAnyProperty(obj, col);
+
+        case RLMAccessorCodeIntObject: return RLMGetIntObject(obj, col);
+        case RLMAccessorCodeFloatObject: return RLMGetFloatObject(obj, col);
+        case RLMAccessorCodeDoubleObject: return RLMGetDoubleObject(obj, col);
+        case RLMAccessorCodeBoolObject: return RLMGetBoolObject(obj, col);
     }
 }

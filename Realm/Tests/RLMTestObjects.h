@@ -18,6 +18,13 @@
 
 #import <Realm/Realm.h>
 
+@interface NSNumberObject : RLMObject
+@property NSNumber<RLMInt> *intObj;
+@property NSNumber<RLMFloat> *floatObj;
+@property NSNumber<RLMDouble> *doubleObj;
+@property NSNumber<RLMBool> *boolObj;
+@end
+
 #pragma mark - Abstract Objects
 #pragma mark -
 
