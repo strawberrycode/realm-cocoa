@@ -206,10 +206,14 @@ using namespace realm;
         }
     }
 
-    if (NSArray *optionalProperties = [objectUtil getOptionalPropertyNames:swiftObjectInstance]) {
+    if (NSDictionary *optionalProperties = [objectUtil getOptionalProperties:swiftObjectInstance]) {
         for (RLMProperty *property in propArray) {
-            property.optional = [optionalProperties containsObject:property.name] ||
+            NSNumber *optionalType = optionalProperties[property.name];
+            property.optional = optionalType != nil ||
                                 property.type == RLMPropertyTypeObject; // remove if/when core supports required link columns
+            if (auto type = RLMNSNullToNil(optionalType)) {
+                property.type = RLMPropertyType(type.intValue);
+            }
         }
     }
     if (NSArray *requiredProperties = [objectUtil requiredPropertiesForClass:objectClass]) {

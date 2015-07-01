@@ -144,6 +144,24 @@ class ObjectSchemaInitializationTests: TestCase {
             XCTAssertFalse(unindexibleSchema[propName]!.indexed, "Shouldn't mark unindexible property '\(propName)' as indexed")
         }
     }
+
+    func testOptionalProperties() {
+        let schema = RLMObjectSchema(forObjectClass: SwiftOptionalObject.self)
+
+        for prop in schema.properties {
+            XCTAssertTrue(prop.optional!)
+        }
+
+        let types = map(schema.properties) { prop in
+            (prop as! RLMProperty).type
+        }
+
+#if REALM_ENABLE_NULL
+        XCTAssertEqual(types, [.String, .String, .Data, .Date, .Object])
+#else
+        XCTAssertEqual(types, [.Object])
+#endif
+    }
 }
 
 class SwiftFakeObject : NSObject {
